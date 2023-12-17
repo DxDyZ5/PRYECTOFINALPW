@@ -1,0 +1,74 @@
+﻿@page "/Tipo"
+@page "/Tipo/{idTipoEditar:int}"
+
+@using PROYECTOFINALPW.Shared;
+@using PROYECTOFINALPW.Client.Services;
+
+@inject ItipoDeCaso tipoService;
+@inject NavigationManager navegacion;
+
+@using Microsoft.AspNetCore.Authorization;
+@using Microsoft.AspNetCore.Components.Authorization;
+@attribute [Authorize]
+
+<h3>TipoCaso</h3>
+
+<EditForm Model="tipo" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+
+    <div class="mb-3">
+        <label class="form-label">Tipo de Caso </label>
+        <InputText class="form-control" @bind-Value="tipo.Tipo"></InputText>
+        <ValidationMessage For="@(() => tipo.Tipo)"></ValidationMessage>
+    </div>
+
+    <button class="btn btn-primary" type="submit">
+        @btnTexto
+    </button>
+    <a class="btn btn-warning" href="Configuracion">Volver</a>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int idTipoEditar { get; set; } = 0;
+
+    string titulo = string.Empty;
+    string btnTexto = string.Empty;
+
+    TipoCasoDTO tipo = new TipoCasoDTO();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (idTipoEditar != 0)
+        {
+            tipo = await tipoService.Buscar(idTipoEditar);
+            btnTexto = "Actualizar tipo";
+            titulo = "Editar tipo";
+        }
+        else
+        {
+            btnTexto = "Guardar tipo";
+            titulo = "Nuevo tipo";
+        }
+
+    }
+
+
+    private async Task OnValidSubmit()
+    {
+        int idDevuelto = 0;
+        if (idTipoEditar == 0)
+            idDevuelto = await tipoService.Agregar(tipo);
+        else
+            idDevuelto = await tipoService.Editar(tipo);
+
+
+        if (idDevuelto != 0)
+            navegacion.NavigateTo("/Configuracion");
+
+    }
+}
+
+
+

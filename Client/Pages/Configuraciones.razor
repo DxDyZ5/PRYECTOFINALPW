@@ -1,0 +1,237 @@
+﻿@page "/Configuracion"
+
+@using PROYECTOFINALPW.Shared;
+@using CurrieTechnologies.Razor.SweetAlert2;
+@using PROYECTOFINALPW.Client.Services;
+
+@inject SweetAlertService swal;
+
+@inject IAbogadoService abogadoService;
+@inject ItipoDeCaso TipoService;
+@inject IEstadoSerivce EstadoService;
+
+@using Microsoft.AspNetCore.Authorization;
+@using Microsoft.AspNetCore.Components.Authorization;
+@attribute [Authorize]
+
+<PageTitle>Configuracion</PageTitle>
+
+<h1>Configuración</h1>
+
+
+<a class="btn btn-outline-dark btn-sm mb-3" href="Abogado">Nuevo abogado</a>
+<a class="btn btn-outline-dark btn-sm mb-3" href="Tipo">Nuevo Tipo caso</a>
+<a class="btn btn-outline-dark btn-sm mb-3" href="Estado">Nuevo Estado caso</a>
+
+<div class="table-responsive">
+<div class="container">
+    <div class="row">
+        <div class="col-sm">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Nombre abogado</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @if (listaAbogado == null)
+                    {
+
+                        <tr>
+                            <td colspan="5" align="center">
+                                <img style="width:50px" src="https://media.tenor.com/On7kvXhzml4AAAAj/loading-gif.gif" />
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var item in listaAbogado)
+                        {
+                            <tr>
+                                <td>@item.Nombre</td>
+
+                                <td>
+                                        <a class="btn btn-dark btn-sm" href="Abogado/@item.Id">
+                                        <i class="oi oi-pencil"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-danger btn-sm ms-2" @onclick="(() => EliminarA(item.Id))">
+                                        <i class="oi oi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    }
+
+
+
+                </tbody>
+            </table>
+        </div>
+        <div class="col-sm">
+                <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Tipo del caso</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @if (ListaTipo == null)
+                    {
+
+                        <tr>
+                            <td colspan="5" align="center">
+                                <img style="width:50px" src="https://media.tenor.com/On7kvXhzml4AAAAj/loading-gif.gif" />
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var item in ListaTipo)
+                        {
+                            <tr>
+                                <td>@item.Tipo</td>
+
+                                <td>
+                                        <a class="btn btn-dark btn-sm" href="Tipo/@item.Id">
+                                        <i class="oi oi-pencil"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-danger btn-sm ms-2" @onclick="(() => EliminarT(item.Id))">
+                                        <i class="oi oi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    }
+
+
+
+                </tbody>
+            </table>
+        </div>
+        <div class="col-sm">
+                <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Estado del caso</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @if (listaestado == null)
+                    {
+
+                        <tr>
+                            <td colspan="5" align="center">
+                                <img style="width:50px" src="https://media.tenor.com/On7kvXhzml4AAAAj/loading-gif.gif" />
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var item in listaestado)
+                        {
+                            <tr>
+                                <td>@item.Estado</td>
+
+                                <td>
+                                        <a class="btn btn-dark btn-sm" href="Estado/@item.Id">
+                                        <i class="oi oi-pencil"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-danger btn-sm ms-2" @onclick="(() => EliminarE(item.Id))">
+                                        <i class="oi oi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    }
+
+
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</div>
+
+@code {
+    List<AbogadoDTO>? listaAbogado = null;
+    List<TipoCasoDTO>? ListaTipo = null;
+    List<EstadoCasoDTO>? listaestado = null;
+    
+
+    protected override async Task OnInitializedAsync()
+    {
+        listaAbogado = await abogadoService.Lista();
+        ListaTipo = await TipoService.Lista();
+        listaestado = await EstadoService.Lista();
+    }
+
+
+    private async Task EliminarA(int id){
+        var resultado = await swal.FireAsync(new SweetAlertOptions
+        {
+            Title = "Eliminar abogado",
+            Text = "¿Deseas eliminar el abogado?",
+            Icon = SweetAlertIcon.Question,
+            ShowCancelButton = true
+        });
+
+    if (resultado.IsConfirmed)
+    {
+        var eliminado = await abogadoService.Eliminar(id);
+
+        if (eliminado)
+                listaAbogado = listaAbogado!.FindAll(c => c.Id != id);
+
+    }
+}
+
+    private async Task EliminarT(int id)
+    {
+        var resultado = await swal.FireAsync(new SweetAlertOptions
+            {
+                Title = "Eliminar tipo",
+                Text = "¿Deseas eliminar el tipo?",
+                Icon = SweetAlertIcon.Question,
+                ShowCancelButton = true
+            });
+
+        if (resultado.IsConfirmed)
+        {
+            var eliminado = await TipoService.Eliminar(id);
+
+            if (eliminado)
+                ListaTipo = ListaTipo!.FindAll(c => c.Id != id);
+
+        }
+    }
+
+
+    private async Task EliminarE(int id)
+    {
+        var resultado = await swal.FireAsync(new SweetAlertOptions
+            {
+                Title = "Eliminar estado",
+                Text = "¿Deseas eliminar el estado?",
+                Icon = SweetAlertIcon.Question,
+                ShowCancelButton = true
+            });
+
+        if (resultado.IsConfirmed)
+        {
+            var eliminado = await EstadoService.Eliminar(id);
+
+            if (eliminado)
+                listaestado = listaestado!.FindAll(c => c.Id != id);
+
+        }
+    }
+
+
+}

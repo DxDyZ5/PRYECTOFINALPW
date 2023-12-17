@@ -1,0 +1,148 @@
+﻿@page "/caso"
+@page "/caso/{idcasoEditar:int}"
+
+@using PROYECTOFINALPW.Shared;
+@using PROYECTOFINALPW.Client.Services;
+
+@inject ICasoService casoService;
+@inject IClienteService clienteService;
+@inject ItipoDeCaso tipoService;
+@inject IAbogadoService abogadoService;
+@inject IEstadoSerivce estadoService;
+@inject NavigationManager navegacion;
+
+@using Microsoft.AspNetCore.Authorization;
+@using Microsoft.AspNetCore.Components.Authorization;
+@attribute [Authorize]
+
+<h3>Caso</h3>
+
+<EditForm Model="caso" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+    <div class="mb-3">
+        <label class="form-label">Fecha</label>
+        <InputDate class="form-control" @bind-Value="caso.Fecha"></InputDate>
+        <ValidationMessage For="@(() => caso.Fecha)"></ValidationMessage>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Nombre del cliente</label>
+        <InputSelect class="form-select" @bind-Value="caso.ClienteId">
+            <option value="0">-- Seleccionar --</option>
+            @foreach (var item in listaCliente)
+            {
+                <option value="@item.Id">@item.Nombre</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => caso.ClienteId)"></ValidationMessage>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Tipo de caso</label>
+        <InputSelect class="form-select" @bind-Value="caso.TipoId">
+            <option value="0">-- Seleccionar --</option>
+            @foreach (var item in listaTipo)
+            {
+                <option value="@item.Id">@item.Tipo</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => caso.TipoId)"></ValidationMessage>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Latitud</label>
+        <InputNumber class="form-control" @bind-Value="caso.Latitud"></InputNumber>
+        <ValidationMessage For="@(() => caso.Latitud)"></ValidationMessage>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Longitud</label>
+        <InputNumber class="form-control" @bind-Value="caso.Longitud"></InputNumber>
+        <ValidationMessage For="@(() => caso.Longitud)"></ValidationMessage>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Descripción </label>
+        <InputTextArea class="form-control" @bind-Value="caso.Descripcion"></InputTextArea>
+        <ValidationMessage For="@(() => caso.Descripcion)"></ValidationMessage>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Abogado</label>
+        <InputSelect class="form-select" @bind-Value="caso.AbogadoId">
+            <option value="0">-- Seleccionar --</option>
+            @foreach (var item in listaAbogado)
+            {
+                <option value="@item.Id">@item.Nombre</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => caso.AbogadoId)"></ValidationMessage>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Tipo de estado</label>
+        <InputSelect class="form-select" @bind-Value="caso.EstadoId">
+            <option value="0">-- Seleccionar --</option>
+            @foreach (var item in listaEstado)
+            {
+                <option value="@item.Id">@item.Estado</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => caso.EstadoId)"></ValidationMessage>
+    </div>
+
+    <button class="btn btn-primary" type="submit">
+        @btnTexto
+    </button>
+
+    <a class="btn btn-warning" href="index">Volver</a>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int idcasoEditar { get; set; } = 0;
+
+    string titulo = string.Empty;
+    string btnTexto = string.Empty;
+
+    CasoDTO caso = new CasoDTO();
+    List<ClienteDTO> listaCliente = new List<ClienteDTO>();
+    List<TipoCasoDTO> listaTipo = new List<TipoCasoDTO>();
+    List<AbogadoDTO> listaAbogado = new List<AbogadoDTO>();
+    List<EstadoCasoDTO> listaEstado = new List<EstadoCasoDTO>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (idcasoEditar != 0)
+        {
+            caso = await casoService.Buscar(idcasoEditar);
+            btnTexto = "Actualizar caso";
+            titulo = "Editar caso";
+        }
+        else
+        {
+            caso.Fecha = DateTime.Today;
+            btnTexto = "Guardar caso";
+            titulo = "Nuevo caso";
+        }
+        listaCliente = await clienteService.Lista();
+        listaTipo = await tipoService.Lista();
+        listaAbogado = await abogadoService.Lista();
+        listaEstado = await estadoService.Lista();
+    }
+
+
+    private async Task OnValidSubmit()
+    {
+        int idDevuelto = 0;
+        if (idcasoEditar == 0)
+            idDevuelto = await casoService.Agregar(caso);
+        else
+            idDevuelto = await casoService.Editar(caso);
+
+
+        if (idDevuelto != 0)
+            navegacion.NavigateTo("/index");
+
+    }
+}

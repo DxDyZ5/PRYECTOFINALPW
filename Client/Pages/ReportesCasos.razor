@@ -1,0 +1,55 @@
+﻿@page "/Reportes"
+
+@inject IJSRuntime JS
+@inject IJSRuntime JS
+
+@using Microsoft.AspNetCore.Authorization;
+@using Microsoft.AspNetCore.Components.Authorization;
+@using PROYECTOFINALPW.Client.Services
+@using PROYECTOFINALPW.Shared;
+
+
+@inject ICasoService  casosService;
+
+
+@attribute [Authorize]
+
+<PageTitle>Reportes</PageTitle>
+
+<h1>Reportes</h1>
+
+
+<div id="map" class="map" data-role="main" style="height: 85vh; width: 100%;"></div>
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadMapData();
+    }
+
+    private async Task LoadMapData()
+    {
+        var listaCasos = await casosService.Lista();
+
+        // Initialize the map if not already initialized
+        await JS.InvokeVoidAsync("initMap");
+        foreach (var item in listaCasos)
+        {
+            string fecha = item.Fecha.ToString("dd/MM/yyyy");
+            object cliente = item.Cliente!.Nombre;
+            object tipo = item.Tipo!.Tipo;
+            object descripcion = item.Descripcion;
+            object abogado = item.Abogado!.Nombre;
+            object estado = item.Estado!.Estado;
+            object x = item.Latitud;
+            object y = item.Longitud;
+            int pop = item.Id;
+
+            // Add a marker for each case
+            await JS.InvokeVoidAsync("addMarker", x, y, pop, fecha, cliente, tipo, descripcion, abogado, estado);
+        }
+    }
+
+    
+}

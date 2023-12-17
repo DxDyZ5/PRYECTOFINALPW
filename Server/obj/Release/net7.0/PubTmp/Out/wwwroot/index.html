@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>PROYECTOFINALPW</title>
+    <base href="/" />
+    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/app.css" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <link href="PROYECTOFINALPW.Client.styles.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+</head>
+
+<body>
+    <style>
+        #mapbtn {
+            font-size: 11px;
+            margin-top: 5px;
+        }
+    </style>
+
+    <div id="app">
+        <svg class="loading-progress">
+            <circle r="40%" cx="50%" cy="50%" />
+            <circle r="40%" cx="50%" cy="50%" />
+        </svg>
+        <div class="loading-progress-text"></div>
+    </div>
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+
+    <script>
+        var map;
+
+        function initMap() {
+            if (!map) {
+                map = L.map('map').setView([0, 0], 3);
+                L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(map);
+            }
+        }
+
+        function addMarker(x, y, pop, fecha, cliente, tipo, descripcion, abogado, estado) {
+            L.marker([x, y]).addTo(map)
+                .bindPopup(`Caso ${pop}: Lat: ${x}, Lng: ${y}<br><div class="text-center d-grid gap-2"><button id="mapbtn" class="btn btn-outline-dark" onclick="GenerarPDF(${x}, ${y}, ${pop}, '${fecha}', '${cliente}', '${tipo}', '${descripcion}', '${abogado}', '${estado}')">
+                                    <svg height="9px" width="10px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+	 viewBox="0 0 309.267 309.267" xml:space="preserve">
+<g>
+	<path style="fill:#E2574C;" d="M38.658,0h164.23l87.049,86.711v203.227c0,10.679-8.659,19.329-19.329,19.329H38.658
+		c-10.67,0-19.329-8.65-19.329-19.329V19.329C19.329,8.65,27.989,0,38.658,0z"/>
+	<path style="fill:#B53629;" d="M289.658,86.981h-67.372c-10.67,0-19.329-8.659-19.329-19.329V0.193L289.658,86.981z"/>
+	<path style="fill:#FFFFFF;" d="M217.434,146.544c3.238,0,4.823-2.822,4.823-5.557c0-2.832-1.653-5.567-4.823-5.567h-18.44
+		c-3.605,0-5.615,2.986-5.615,6.282v45.317c0,4.04,2.3,6.282,5.412,6.282c3.093,0,5.403-2.242,5.403-6.282v-12.438h11.153
+		c3.46,0,5.19-2.832,5.19-5.644c0-2.754-1.73-5.49-5.19-5.49h-11.153v-16.903C204.194,146.544,217.434,146.544,217.434,146.544z
+		 M155.107,135.42h-13.492c-3.663,0-6.263,2.513-6.263,6.243v45.395c0,4.629,3.74,6.079,6.417,6.079h14.159
+		c16.758,0,27.824-11.027,27.824-28.047C183.743,147.095,173.325,135.42,155.107,135.42z M155.755,181.946h-8.225v-35.334h7.413
+		c11.221,0,16.101,7.529,16.101,17.918C171.044,174.253,166.25,181.946,155.755,181.946z M106.33,135.42H92.964
+		c-3.779,0-5.886,2.493-5.886,6.282v45.317c0,4.04,2.416,6.282,5.663,6.282s5.663-2.242,5.663-6.282v-13.231h8.379
+		c10.341,0,18.875-7.326,18.875-19.107C125.659,143.152,117.425,135.42,106.33,135.42z M106.108,163.158h-7.703v-17.097h7.703
+		c4.755,0,7.78,3.711,7.78,8.553C113.878,159.447,110.863,163.158,106.108,163.158z"/>
+</g>
+</svg>
+                                    PDF</button></div>`)
+                .openPopup();
+        }
+    </script>
+
+    <script>
+        window.GenerarPDF = async (x, y, pop, fecha, cliente, tipo, descripcion, abogado, estado) => {
+
+            var pdf = new jsPDF();
+
+            pdf.text(30, 30, `Caso ${pop} jurídico`);
+
+            pdf.text(30, 50, `Fecha: ${fecha}`);
+            pdf.text(30, 60, `Cliente: ${cliente}`);
+            pdf.text(30, 70, `Tipo: ${tipo}`);
+            pdf.text(30, 80, `Latitud: ${x}`);
+            pdf.text(30, 90, `Longitud: ${y}`);
+            pdf.text(30, 100, `Descripción: ${descripcion}`);
+            pdf.text(30, 110, `Abogado: ${abogado}`);
+            pdf.text(30, 120, `Estado: ${estado}`);
+
+            pdf.save(`Caso${pop}.pdf`);
+        }
+    </script>
+
+    <script src="_content/CurrieTechnologies.Razor.SweetAlert2/sweetAlert2.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.debug.js"></script>
+    <script src="_framework/blazor.webassembly.js"></script>
+</body>
+
+</html>

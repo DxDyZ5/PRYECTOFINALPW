@@ -1,0 +1,111 @@
+﻿@page "/Cliente"
+@page "/Cliente/{idClienteEditar:int}"
+
+@using PROYECTOFINALPW.Shared;
+@using PROYECTOFINALPW.Client.Services;
+
+@inject IClienteService clienteService;
+@inject NavigationManager navegacion;
+
+
+@using Microsoft.AspNetCore.Authorization;
+@using Microsoft.AspNetCore.Components.Authorization;
+@attribute [Authorize]
+
+<h3>Cliente</h3>
+
+<EditForm Model="cliente" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+
+    <div class="mb-3">
+        <label class="form-label">Nombre </label>
+        <InputText class="form-control" @bind-Value="cliente.Nombre"></InputText>
+        <ValidationMessage For="@(() => cliente.Nombre)"></ValidationMessage>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Apellido </label>
+        <InputText class="form-control" @bind-Value="cliente.Apellido"></InputText>
+        <ValidationMessage For="@(() => cliente.Apellido)"></ValidationMessage>
+    </div>
+    
+    <div class="mb-3">
+        <label class="form-label">Cedula</label>
+        <InputText class="form-control" @bind-Value="cliente.Cedula"></InputText>
+        <ValidationMessage For="@(() => cliente.Cedula)"></ValidationMessage>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Correo</label>
+        <InputText class="form-control" @bind-Value="cliente.Correo"></InputText>
+        <ValidationMessage For="@(() => cliente.Correo)"></ValidationMessage>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Telefono </label>
+        <InputText class="form-control" @bind-Value="cliente.Telefono"></InputText>
+        <ValidationMessage For="@(() => cliente.Telefono)"></ValidationMessage>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Celular </label>
+        <InputText class="form-control" @bind-Value="cliente.Celular"></InputText>
+        <ValidationMessage For="@(() => cliente.Celular)"></ValidationMessage>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Dirección </label>
+        <InputText class="form-control" @bind-Value="cliente.Direccion"></InputText>
+        <ValidationMessage For="@(() => cliente.Direccion)"></ValidationMessage>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Estado civil </label>
+        <InputText class="form-control" @bind-Value="cliente.EstadoCivil"></InputText>
+        <ValidationMessage For="@(() => cliente.EstadoCivil)"></ValidationMessage>
+    </div>
+
+    <button class="btn btn-primary" type="submit">
+        @btnTexto
+    </button>
+
+    <a class="btn btn-warning" href="Clientes">Volver</a>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int idClienteEditar { get; set; } = 0;
+
+    string titulo = string.Empty;
+    string btnTexto = string.Empty;
+
+    ClienteDTO cliente = new ClienteDTO();
+   
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (idClienteEditar != 0)
+        {
+            cliente = await clienteService.Buscar(idClienteEditar);
+            btnTexto = "Actualizar cliente";
+            titulo = "Editar cliente";
+        }
+        else
+        {
+            btnTexto = "Guardar cliente";
+            titulo = "Nuevo cliente";
+        }
+     
+    }
+
+
+    private async Task OnValidSubmit()
+    {
+        int idDevuelto = 0;
+        if (idClienteEditar == 0)
+            idDevuelto = await clienteService.Agregar(cliente);
+        else
+            idDevuelto = await clienteService.Editar(cliente);
+
+
+        if (idDevuelto != 0)
+            navegacion.NavigateTo("/Clientes");
+
+    }
+}
+
+

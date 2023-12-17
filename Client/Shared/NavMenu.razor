@@ -1,0 +1,64 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+
+@using PROYECTOFINALPW.Client.Extensiones;
+@inject AuthenticationStateProvider autenticacionProvider
+@inject NavigationManager navManager
+
+<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">PROYECTOFINALPW</a>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+
+<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
+    <nav class="flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/index" Match="NavLinkMatch.All">
+                <span class="oi oi-box" aria-hidden="true"></span> Gestion de casos
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="Clientes">
+                <span class="oi oi-people" aria-hidden="true"></span> Gestión de clientes
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="Reportes">
+                <span class="oi oi-file" aria-hidden="true"></span> Reportes de casos
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="configuracion">
+                <span class="oi oi-cog" aria-hidden="true"></span> Configuración
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" @onclick="CerrarSesion" href="javascript:void(0)">
+                <span class="oi oi-account-logout" aria-hidden="true"></span>Salir
+            </NavLink>
+        </div>
+    </nav>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+    private async Task CerrarSesion()
+    {
+        var autenticacionExt = (Autenticacion)autenticacionProvider;
+        await autenticacionExt.ActualizarEstadoAutenticacion(null);
+        navManager.NavigateTo("/", true);
+    }
+}

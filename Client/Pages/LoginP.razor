@@ -1,0 +1,129 @@
+﻿@page "/"
+@layout LoginLayout
+
+@inject HttpClient httpClient
+@using PROYECTOFINALPW.Client.Extensiones
+@using PROYECTOFINALPW.Shared
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider autenticacionProvider;
+@inject NavigationManager navManager
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="background-color: rgba(0, 0, 0, 0);">
+    <!-- Container wrapper -->
+    <div class="container-fluid">
+        <!-- Toggle button -->
+        <button class="navbar-toggler" type="button" data-mdb-toggle="collapse"
+                data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Collapsible wrapper -->
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <!-- Navbar brand -->
+            <a class="navbar-brand mt-2 mt-lg-0" href="#">         
+            </a>
+            <!-- Left links -->
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    
+                </li>
+                <li class="nav-item">
+                   
+                </li>
+                <li class="nav-item">
+                    
+                </li>
+            </ul>
+            <!-- Left links -->
+        </div>
+        <!-- Collapsible wrapper -->
+        <!-- Right elements -->
+        <div class="d-flex align-items-center">
+            <!-- Icon -->
+            <a class="text-reset me-3" href="#">
+                <i class="fas fa-shopping-cart"></i>
+            </a>
+
+            <!-- Notifications -->
+            <div class="dropdown">
+               
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+                    <li>
+                
+                    </li>
+                    <li>
+                       
+                    </li>
+                    <li>
+                       
+                    </li>
+                </ul>
+            </div>
+            <!-- Avatar -->
+          
+        </div>
+        <!-- Right elements -->
+    </div>
+    <!-- Container wrapper -->
+</nav>
+
+
+
+<style>
+    .container{
+        width:100%;
+        max-width:700px;
+        margin: 30vh auto;
+    }
+</style>
+<div class="container">
+    <h1 class="text-center">Bienvenido a ABOAPP</h1>
+    <form>
+        <h4 class="text-center">-Iniciar Sesión-</h4>
+        <div class="mb-3">
+            <label for="usuario" class="form-label">Usuario</label>
+            <div class="input-group">
+                <span class="input-group-text"><span class='oi oi-person'></span></span>
+                <input @bind="login.Usuario" type="text" class="form-control" id="usuario" placeholder="Ingresa tu usuario" />
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="clave" class="form-label">Clave</label>
+            <div class="input-group">
+                <span class="input-group-text"><span class='oi oi-key'></span></span>
+                <input @bind="login.Clave" type="password" class="form-control" id="clave" placeholder="Ingresa tu clave" />
+            </div>
+        </div>
+
+        <button type="button" class="btn btn-primary form-control" @onclick="IniciarSesion">Iniciar Sesión</button>
+    </form>
+</div>
+
+<footer class="bg-dark text-center text-lg-start">
+    <!-- Copyright -->
+    <div class="text-center p-3 text-light" style="background-color: rgba(0, 0, 0, 0);">
+        © 20220173 Copyright:
+        <span class="text-light">Manuel Torres</span>
+    </div>
+    <!-- Copyright -->
+</footer> 
+
+@code {
+    private Login login = new Login();
+
+    private async Task IniciarSesion()
+    {
+        var loginResponse = await httpClient.PostAsJsonAsync<Login>("/api/Usuario/Login", login);
+        if (loginResponse.IsSuccessStatusCode)
+        {
+            var sesionUsuario = await loginResponse.Content.ReadFromJsonAsync<Sesion>();
+            var autenticacionExt = (Autenticacion)autenticacionProvider;
+            await autenticacionExt.ActualizarEstadoAutenticacion(sesionUsuario);
+
+            navManager.NavigateTo("/index");
+        }
+    }
+}
+

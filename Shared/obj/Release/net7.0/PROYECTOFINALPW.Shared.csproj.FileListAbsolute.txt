@@ -1,0 +1,11 @@
+C:\Users\manue\source\repos\PROYECTOFINALPW\PROYECTOFINALPW\Shared\bin\Release\net7.0\PROYECTOFINALPW.Shared.deps.json
+C:\Users\manue\source\repos\PROYECTOFINALPW\PROYECTOFINALPW\Shared\bin\Release\net7.0\PROYECTOFINALPW.Shared.dll
+C:\Users\manue\source\repos\PROYECTOFINALPW\PROYECTOFINALPW\Shared\bin\Release\net7.0\PROYECTOFINALPW.Shared.pdb
+C:\Users\manue\source\repos\PROYECTOFINALPW\PROYECTOFINALPW\Shared\obj\Release\net7.0\PROYECTOFINALPW.Shared.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\manue\source\repos\PROYECTOFINALPW\PROYECTOFINALPW\Shared\obj\Release\net7.0\PROYECTOFINALPW.Shared.AssemblyInfoInputs.cache
+C:\Users\manue\source\repos\PROYECTOFINALPW\PROYECTOFINALPW\Shared\obj\Release\net7.0\PROYECTOFINALPW.Shared.AssemblyInfo.cs
+C:\Users\manue\source\repos\PROYECTOFINALPW\PROYECTOFINALPW\Shared\obj\Release\net7.0\PROYECTOFINALPW.Shared.csproj.CoreCompileInputs.cache
+C:\Users\manue\source\repos\PROYECTOFINALPW\PROYECTOFINALPW\Shared\obj\Release\net7.0\PROYECTOFINALPW.Shared.dll
+C:\Users\manue\source\repos\PROYECTOFINALPW\PROYECTOFINALPW\Shared\obj\Release\net7.0\refint\PROYECTOFINALPW.Shared.dll
+C:\Users\manue\source\repos\PROYECTOFINALPW\PROYECTOFINALPW\Shared\obj\Release\net7.0\PROYECTOFINALPW.Shared.pdb
+C:\Users\manue\source\repos\PROYECTOFINALPW\PROYECTOFINALPW\Shared\obj\Release\net7.0\ref\PROYECTOFINALPW.Shared.dll

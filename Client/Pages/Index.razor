@@ -1,0 +1,91 @@
+﻿@page "/index"
+
+@using PROYECTOFINALPW.Shared;
+@using CurrieTechnologies.Razor.SweetAlert2;
+@using PROYECTOFINALPW.Client.Services;
+
+@inject SweetAlertService swal;
+
+@inject ICasoService casoService;
+
+@using Microsoft.AspNetCore.Authorization;
+@using Microsoft.AspNetCore.Components.Authorization;
+@attribute [Authorize]
+
+<PageTitle>Index</PageTitle>
+
+<h1>Casos</h1>
+
+
+<a class="btn btn-dark btn-sm mb-3" href="caso">Nuevo Caso</a>
+
+<div class="table-responsive">
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Fecha</th>
+            <th>Nombre del cliente</th>
+            <th>Tipo de caso</th>
+            <th>Latitud</th>
+            <th>Longitud</th>
+            <th>Descripción</th>
+            <th>Nombre del abogado</th>
+            <th>Estado del caso</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @if (listaCaso == null)
+        {
+
+            <tr>
+                <td colspan="5" align="center">
+                    <img style="width:50px" src="https://media.tenor.com/On7kvXhzml4AAAAj/loading-gif.gif" />
+                </td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var item in listaCaso)
+            {
+                <tr>
+                    <td>@item.Fecha.ToString("dd/MM/yyyy")</td>
+                    <td>@item.Cliente!.Nombre</td>
+                    <td>@item.Tipo!.Tipo</td>
+                    <td>@item.Latitud</td>
+                    <td>@item.Longitud</td>
+                    <td>@item.Descripcion</td>
+                    <td>@item.Abogado!.Nombre</td>
+                    <td>@item.Estado!.Estado</td>
+ 
+                    <td>
+                        <a class="btn btn-dark btn-sm" href="caso/@item.Id">
+                            <i class="oi oi-pencil"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        }
+
+    </tbody>
+</table>
+</div>
+@* Welcome to your new app. *@
+
+
+@* <AuthorizeView>
+    <Authorized>
+        <h1>Bienvenido @context.User.Identity!.Name</h1>
+    </Authorized>
+</AuthorizeView> *@
+
+@* <SurveyPrompt Title="How is Blazor working for you?" /> *@
+
+@code{
+    List<CasoDTO>? listaCaso = null;
+
+    protected override async Task OnInitializedAsync() {
+        listaCaso = await casoService.Lista();
+    } 
+    }

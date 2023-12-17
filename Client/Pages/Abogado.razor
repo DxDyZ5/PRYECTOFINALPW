@@ -1,0 +1,73 @@
+﻿@page "/Abogado"
+@page "/Abogado/{idAbogadoEditar:int}"
+
+@using PROYECTOFINALPW.Shared;
+@using PROYECTOFINALPW.Client.Services;
+
+@inject IAbogadoService abogadoService;
+@inject NavigationManager navegacion;
+
+@using Microsoft.AspNetCore.Authorization;
+@using Microsoft.AspNetCore.Components.Authorization;
+@attribute [Authorize]
+
+<h3>Configurar</h3>
+
+<EditForm Model="abogado" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+
+    <div class="mb-3">
+        <label class="form-label">Nombre </label>
+        <InputText class="form-control" @bind-Value="abogado.Nombre"></InputText>
+        <ValidationMessage For="@(() => abogado.Nombre)"></ValidationMessage>
+    </div>
+    
+    <button class="btn btn-primary" type="submit">
+        @btnTexto
+    </button>
+    <a class="btn btn-warning" href="Configuracion">Volver</a>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int idAbogadoEditar { get; set; } = 0;
+
+    string titulo = string.Empty;
+    string btnTexto = string.Empty;
+
+    AbogadoDTO abogado = new AbogadoDTO();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (idAbogadoEditar != 0)
+        {
+            abogado = await abogadoService.Buscar(idAbogadoEditar);
+            btnTexto = "Actualizar abogado";
+            titulo = "Editar abogado";
+        }
+        else
+        {
+            btnTexto = "Guardar abogado";
+            titulo = "Nuevo abogado";
+        }
+
+    }
+
+
+    private async Task OnValidSubmit()
+    {
+        int idDevuelto = 0;
+        if (idAbogadoEditar == 0)
+            idDevuelto = await abogadoService.Agregar(abogado);
+        else
+            idDevuelto = await abogadoService.Editar(abogado);
+
+
+        if (idDevuelto != 0)
+            navegacion.NavigateTo("/Configuracion");
+
+    }
+}
+
+

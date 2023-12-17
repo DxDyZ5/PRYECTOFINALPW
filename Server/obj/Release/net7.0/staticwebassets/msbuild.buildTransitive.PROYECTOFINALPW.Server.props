@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\buildMultiTargeting\PROYECTOFINALPW.Server.props" />
+</Project>
